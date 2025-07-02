@@ -3,7 +3,8 @@ import subprocess
 from flask_cors import CORS
 from flask import send_file
 from main import load_credentials, get_all_unread_emails, EXCEL_PATH, build
-
+from flask import request, jsonify
+import pandas as pd
 
 app = Flask(__name__)
 CORS(app)
@@ -52,6 +53,18 @@ def run_script():
             "stdout": e.stdout,
             "stderr": e.stderr
         }), 500
+
+@app.route('/update_status', methods=['POST'])
+def update_status():
+    data = request.get_json()
+    message_id = data['message_id']
+    new_status = data['status']
+
+    df = pd.read_excel('result/log2.xlsx')
+    df.loc[df['Message_ID'] == message_id, 'Status'] = new_status
+    df.to_excel('result/log2.xlsx', index=False)
+
+    return jsonify({'success': True})
 
 
 @app.route("/get-emails", methods=["GET"])

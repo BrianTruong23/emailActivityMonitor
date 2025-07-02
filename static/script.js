@@ -63,14 +63,79 @@ function loadExcelLog() {
       const workbook = XLSX.read(arrayBuffer, { type: "array" });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
-      let html = XLSX.utils.sheet_to_html(worksheet);
-      html = html.replace(/<table/g, '<table class="excel-table"');
-      outputDiv.innerHTML = html;
+      const rows = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+
+      renderExcelTable(rows);
     })
     .catch(error => {
       console.error(error);
       outputDiv.textContent = "⚠️ Failed to load Excel file.";
     });
+}
+
+function updateStatus(messageId, newStatus) {
+  fetch('/update_status', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message_id: messageId,
+      status: newStatus
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      console.log('Status updated successfully');
+    } else {
+      console.error('Update failed');
+    }
+  })
+  .catch(error => console.error(error));
+}
+
+
+function renderExcelTable(rows) {
+  let html = `
+    <table class="excel-table">
+      <thead>
+        <tr>
+          <th>Message_ID</th>
+          <th>Email Sender</th>
+          <th>Date</th>
+          <th>Time Received</th>
+          <th>Wait Time</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  rows.forEach(row => {
+    html += `
+      <tr>
+        <td>${row.Message_ID}</td>
+        <td>${row["Email Sender"]}</td>
+        <td>${row.Date}</td>
+        <td>${row["Time Received"]}</td>
+        <td>${row["Wait Time"]}</td>
+        <td>
+          <select id="status-${row.Message_ID}">
+            <option ${row.Status === "Not started" ? "selected" : ""}>Not started</option>
+            <option ${row.Status === "In progress" ? "selected" : ""}>In progress</option>
+            <option ${row.Status === "Done" ? "selected" : ""}>Done</option>
+          </select>
+        </td>
+        <td>
+          <button onclick="updateStatus('${row.Message_ID}', document.getElementById('status-${row.Message_ID}').value)">💾 Save</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  html += "</tbody></table>";
+
+  document.getElementById("output").innerHTML = html;
 }
 
 
