@@ -44,4 +44,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git add result/log.xlsx
           git commit -m "Update log.xlsx" || echo "No changes to commit"
-          git push
+          git push || (
+            echo "First push failed, retrying with PAT_TOKEN..."
+            git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }} HEAD:main
+          )
