@@ -2,6 +2,8 @@
 flask
 flask-cors
 gunicorn
+sqlalchemy
+flask_sqlalchemy
 
 # Google API client for Gmail
 google-api-python-client

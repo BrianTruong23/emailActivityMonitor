@@ -53,25 +53,16 @@ function loadExcelLog() {
   const outputDiv = document.getElementById("output");
   outputDiv.textContent = "Loading Excel file...";
 
-  fetch("/get-excel")
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`);
-      }
-      return response.arrayBuffer();
-    })
-    .then(arrayBuffer => {
-      const workbook = XLSX.read(arrayBuffer, { type: "array" });
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[sheetName];
-      const rows = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+  fetch("/get-status")
+  .then(response => response.json())
+  .then(rows => {
+    renderExcelTable(rows);
+  })
+  .catch(error => {
+    console.error(error);
+    outputDiv.textContent = "⚠️ Failed to load status data.";
+  });
 
-      renderExcelTable(rows);
-    })
-    .catch(error => {
-      console.error(error);
-      outputDiv.textContent = "⚠️ Failed to load Excel file.";
-    });
 }
 
 function updateStatus(messageId, newStatus) {
