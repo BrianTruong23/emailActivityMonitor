@@ -8,7 +8,8 @@ from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.utils import get_column_letter
 import os
 from email.utils import parsedate_to_datetime
-
+import pandas as pd
+from datetime import datetime, timezone
 
 SCOPES = [
     "https://www.googleapis.com/auth/gmail.readonly",
@@ -32,7 +33,17 @@ def load_credentials():
     return creds
 
 
-def get_unread_question_emails(service):
+
+
+def get_unread_question_emails(service, excel_path):
+    # Load existing IDs from Excel
+    try:
+        df = pd.read_excel(excel_path)
+        logged_ids = set(df['MessageID'].astype(str))
+    except FileNotFoundError:
+        logged_ids = set()
+    
+    # Retrieve unread messages
     results = service.users().messages().list(
         userId='me',
         labelIds=['INBOX'],
@@ -42,18 +53,28 @@ def get_unread_question_emails(service):
     question_emails = []
 
     for msg in messages:
+        message_id = msg['id']
+
+        # Skip if already logged
+        if message_id in logged_ids:
+            continue
+
         message = service.users().messages().get(
             userId='me',
-            id=msg['id'],
+            id=message_id,
             format='metadata',
             metadataHeaders=['From', 'Subject', 'Date']
         ).execute()
+
         headers = {h['name']: h['value'] for h in message['payload']['headers']}
+        
         if '@Question' in headers.get('Subject', ''):
+            # Attach message ID so you can save it later
+            headers['MessageID'] = message_id
             question_emails.append(headers)
+
     return question_emails
 
-from datetime import datetime, timezone
 
 def append_to_sheet(sheet_service, spreadsheet_id, data):
     body = {
@@ -100,7 +121,7 @@ def append_to_excel(filename, records):
         ws = wb.active
         ws.title = "Activity Log"
 
-        headers = ["Email Sender", "Date", "Time Received", "Wait Time", "Status"]
+        headers = ["Message_ID", "Email Sender", "Date", "Time Received", "Wait Time", "Status"]
         ws.append(headers)
 
         # Add dropdown validation to Status column
@@ -144,7 +165,7 @@ def main():
     
     gmail_service = build('gmail', 'v1', credentials=creds)
 
-    emails = get_unread_question_emails(gmail_service)
+    emails = get_unread_question_emails(gmail_service, "result/log.xlsx")
 
     for email in emails:
         sender = email.get('From')
@@ -163,7 +184,10 @@ def main():
         date_received = email_date.strftime('%Y-%m-%d')
         time_received = email_date.strftime('%H:%M:%S')
 
+        message_id = email['MessageID'] 
+
         row = [
+            message_id,
             sender,
             date_received,
             time_received,
