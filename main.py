@@ -37,7 +37,31 @@ def load_credentials():
     return creds
 
 
+def get_all_unread_emails(service):
+    # Retrieve unread messages
+    results = service.users().messages().list(
+        userId='me',
+        labelIds=['INBOX'],
+        q='is:unread'
+    ).execute()
+    messages = results.get('messages', [])
+    question_emails = []
 
+    for msg in messages:
+        message_id = msg['id']
+
+        message = service.users().messages().get(
+            userId='me',
+            id=message_id,
+            format='metadata',
+            metadataHeaders=['From', 'Subject', 'Date']
+        ).execute()
+
+        headers = {h['name']: h['value'] for h in message['payload']['headers']}
+        
+        question_emails.append(headers)
+
+    return question_emails
 
 def get_unread_question_emails(service, excel_path):
     # Load existing IDs from Excel

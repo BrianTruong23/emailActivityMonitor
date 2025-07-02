@@ -7,11 +7,24 @@
   <!-- SheetJS library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
-<body>
+<body onload="loadInbox(); loadExcelLog();">
+
+  <h2>ℹ️ Information about this project</h2>
+  <p>
+    This web application monitors your email inbox for messages containing <strong>@Question</strong> in the subject line.
+    It automatically updates the Excel log below, so you can track and review all relevant emails in one place.
+  </p>
+
+
+    <h2>Email Inbox: All Emails Received</h2>
+    <div id="emailInbox"></div>
+    <button id = "refreshInboxButton" onclick="loadInbox()">🔄 Refresh Inbox</button>
+
     <h2>📊 Excel Log Viewer</h2>
     <div id="output">Loading Excel file...</div>
 
     <button id="runButton">🔄 Run main.py</button>
+    <a href="/download-excel" class="download-btn">⬇️ Download Excel Log</a>
     <div id="status"></div>
 
    <script src="{{ url_for('static', filename='script.js') }}"></script>

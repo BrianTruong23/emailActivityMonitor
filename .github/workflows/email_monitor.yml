@@ -6,7 +6,7 @@ on:
       - main
   workflow_dispatch:  # allows manual trigger
   schedule:
-    - cron: '* * * * *'  # runs every hour
+    - cron: '*/15 * * * *'  # runs every hour
 
 jobs:
   monitor:

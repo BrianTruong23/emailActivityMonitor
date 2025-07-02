@@ -1,9 +1,17 @@
+# Flask web server
 flask
 flask-cors
 gunicorn
-pandas
-openpyxl
+
+# Google API client for Gmail
 google-api-python-client
 google-auth
 google-auth-httplib2
 google-auth-oauthlib
+
+# Excel and CSV handling
+pandas
+openpyxl
+
+# You may also want httplib2 if your Gmail functions use it explicitly
+httplib2

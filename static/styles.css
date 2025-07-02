@@ -39,8 +39,7 @@
       margin-top: 20px;
     }
 
-    #runButton {
-  background-color: #4CAF50; /* green */
+  #runButton, #refreshInboxButton{
   color: white;
   border: none;
   padding: 12px 20px;
@@ -53,6 +52,22 @@
   margin: 20px 0 10px;
 }
 
+#runButton{
+    background-color: #4CAF50; /* green */
+}
+
+#refreshInboxButton{
+  background-color: #1B3C53;
+}
+
+#refreshInboxButton:hover{
+  background-color: #5EABD6;
+}
+
+#refreshInboxButton:active{
+  background-color: #1B3C53;
+}
+
 #runButton:hover {
   background-color: #45a049;
   transform: translateY(-2px);
@@ -61,4 +76,30 @@
 #runButton:active {
   background-color: #3e8e41;
   transform: translateY(0);
+}
+
+#emailInbox {
+  width: 600px;          /* fixed width */
+  max-height: 400px;     /* fixed height */
+  overflow-y: auto;      /* enable vertical scrolling */
+  padding: 10px;
+  background: #f5f7fa;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+
+.download-btn {
+  display: inline-block;
+  text-decoration: none;
+  background-color: #17a2b8;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 5px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.download-btn:hover {
+  background-color: #11707f;
 }
