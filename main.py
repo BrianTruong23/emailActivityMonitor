@@ -171,6 +171,10 @@ def main():
             "Not started"
         ]
 
+        # check to see if result folder exists
+        if not os.path.exists("result"):
+            os.makedirs("result")
+
         append_to_excel("result/log.xlsx", [row])
 
   
