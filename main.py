@@ -36,9 +36,20 @@ def authenticate():
 import pickle
 
 def load_credentials():
-    with open('token.pickle', 'rb') as token:
-        creds = pickle.load(token)
-    return creds
+    if os.path.exists("/etc/secrets/credentials.json"):
+        print("✅ Using Render credentials...")
+        # Load base64-encoded pickle
+        with open("/etc/secrets/token.pickleb64", "rb") as f:
+            b64_data = f.read()
+        raw_data = base64.b64decode(b64_data)
+        creds = pickle.loads(raw_data)
+        return creds
+    else:
+        print("✅ Using local credentials...")
+        # Local development credentials
+        with open("token.pickle", "rb") as token:
+            creds = pickle.load(token)
+        return creds
 
 def load_render_credentials():
     try:
@@ -213,10 +224,7 @@ def format_wait_time(delta):
 def main():
 
 
-    if os.path.exists("/etc/secrets/credentials.json"):
-        creds = load_render_credentials()
-    else:
-        creds = load_credentials()
+    creds = load_credentials()
     
     gmail_service = build('gmail', 'v1', credentials=creds)
 
