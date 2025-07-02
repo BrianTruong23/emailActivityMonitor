@@ -16,6 +16,8 @@ SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets"
 ]
 
+EXCEL_PATH = "result/log2.xlsx"
+
 def authenticate():
     flow = InstalledAppFlow.from_client_secrets_file(
         'credentials.json', SCOPES)
@@ -199,7 +201,7 @@ def main():
         if not os.path.exists("result"):
             os.makedirs("result")
 
-        append_to_excel("result/log.xlsx", [row])
+        append_to_excel(EXCEL_PATH, [row])
 
   
 

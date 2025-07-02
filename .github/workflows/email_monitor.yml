@@ -42,7 +42,7 @@ jobs:
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
-          git add result/log.xlsx
+          git add result/log2.xlsx
           git commit -m "Update log.xlsx" || echo "No changes to commit"
           git push || (
             echo "First push failed, retrying with PAT_TOKEN..."
