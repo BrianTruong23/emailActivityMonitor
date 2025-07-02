@@ -41,7 +41,7 @@ def get_unread_question_emails(service, excel_path):
     # Load existing IDs from Excel
     try:
         df = pd.read_excel(excel_path)
-        logged_ids = set(df['MessageID'].astype(str))
+        logged_ids = set(df['Message_ID'].astype(str))
     except FileNotFoundError:
         logged_ids = set()
     
@@ -167,7 +167,7 @@ def main():
     
     gmail_service = build('gmail', 'v1', credentials=creds)
 
-    emails = get_unread_question_emails(gmail_service, "result/log.xlsx")
+    emails = get_unread_question_emails(gmail_service, EXCEL_PATH)
 
     for email in emails:
         sender = email.get('From')

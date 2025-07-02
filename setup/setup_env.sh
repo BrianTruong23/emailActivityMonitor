@@ -13,7 +13,7 @@ source venv/bin/activate
 pip install --upgrade pip
 
 # Install dependencies
-pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib openpyxl
+pip install -r requirements.txt
 
 echo "✅ Virtual environment created and dependencies installed!"
 echo "💡 To activate it later, run: source venv/bin/activate"
