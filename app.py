@@ -1,9 +1,16 @@
 from flask import Flask, render_template, jsonify
 import subprocess
 from flask_cors import CORS
+from flask import send_file
 
 app = Flask(__name__)
 CORS(app)
+
+
+@app.route("/get-log")
+def get_log():
+    return send_file("result/log2.xlsx", as_attachment=False)
+
 
 @app.route("/")
 def index():

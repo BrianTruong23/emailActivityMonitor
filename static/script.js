@@ -1,4 +1,4 @@
-const excelUrl = 'result/log2.xlsx';
+const excelUrl = '/get-log';
 
 fetch(excelUrl)
     .then(response => {
