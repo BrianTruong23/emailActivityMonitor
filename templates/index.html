@@ -18,9 +18,10 @@
 
   <h2>Want to try this out?</h2>
   <p>
-    To test the system, send an email with <strong>@Question</strong> in the subject line to <strong>procurementhub361@gmail.com</strong>. Then click <em>Refresh Inbox</em> and <em>Run main.py</em> to see the email appear in the inbox and the Excel log update instantly.
+    To test the system, send an email with <strong>@Question</strong> in the subject line to <strong>procurementhub361@gmail.com</strong>. Then click <em>Refresh Inbox</em> and <em>Reload Status Table</em> to see the email appear in the inbox and the Excel log update instantly.
     <br><br>
     If you prefer not to click the buttons, the system will update automatically every 15 minutes.
+    You can also download the Excel with the button for your own convenience. 
   </p>
 
     <h2>Email Inbox: All Emails Received</h2>
@@ -28,9 +29,13 @@
     <button id = "refreshInboxButton" onclick="loadInbox()">🔄 Refresh Inbox</button>
 
     <h2>📊 Excel Log Viewer</h2>
-    <div id="output">Loading Excel file...</div>
+    <div id="statusMessage" style="margin-top: 10px; font-weight: bold;"></div>
+    <div id="output">Loading Status Table</div>
 
-    <button id="runButton">🔄 Run main.py</button>
+    <button id="runButton">🔄 Reload Status Table</button>
+    <a href="/download-excel" download>
+      <button id="downloadExcel" class = "download-btn ">⬇️ Download Excel Log</button>
+    </a>
     <div id="status"></div>
 
    <script src="{{ url_for('static', filename='script.js') }}"></script>

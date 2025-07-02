@@ -48,6 +48,7 @@ document.getElementById("runButton").addEventListener("click", () => {
 });
 
 
+
 function loadExcelLog() {
   const outputDiv = document.getElementById("output");
   outputDiv.textContent = "Loading Excel file...";
@@ -84,14 +85,27 @@ function updateStatus(messageId, newStatus) {
   })
   .then(response => response.json())
   .then(data => {
+    const statusDiv = document.getElementById("statusMessage");
     if (data.success) {
-      console.log('Status updated successfully');
+      statusDiv.textContent = "✅ Status updated successfully.";
+      statusDiv.style.color = "green";
+      loadExcelLog();
+      setTimeout(() => {
+        statusDiv.textContent = "";
+      }, 3000);
     } else {
-      console.error('Update failed');
+      statusDiv.textContent = "❌ Failed to update status.";
+      statusDiv.style.color = "red";
     }
   })
-  .catch(error => console.error(error));
+  .catch(error => {
+    const statusDiv = document.getElementById("statusMessage");
+    statusDiv.textContent = "❌ Error updating status.";
+    statusDiv.style.color = "red";
+    console.error(error);
+  });
 }
+
 
 
 function renderExcelTable(rows) {
