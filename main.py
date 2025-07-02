@@ -18,6 +18,8 @@ SCOPES = [
 
 EXCEL_PATH = "result/log2.xlsx"
 
+MESSAGE_ID = "Message_ID"
+
 def authenticate():
     flow = InstalledAppFlow.from_client_secrets_file(
         'credentials.json', SCOPES)
@@ -41,7 +43,7 @@ def get_unread_question_emails(service, excel_path):
     # Load existing IDs from Excel
     try:
         df = pd.read_excel(excel_path)
-        logged_ids = set(df['Message_ID'].astype(str))
+        logged_ids = set(df[MESSAGE_ID].astype(str))
     except FileNotFoundError:
         logged_ids = set()
     
@@ -72,7 +74,7 @@ def get_unread_question_emails(service, excel_path):
         
         if '@Question' in headers.get('Subject', ''):
             # Attach message ID so you can save it later
-            headers['MessageID'] = message_id
+            headers[MESSAGE_ID] = message_id
             question_emails.append(headers)
 
     return question_emails
@@ -123,7 +125,7 @@ def append_to_excel(filename, records):
         ws = wb.active
         ws.title = "Activity Log"
 
-        headers = ["Message_ID", "Email Sender", "Date", "Time Received", "Wait Time", "Status"]
+        headers = [MESSAGE_ID, "Email Sender", "Date", "Time Received", "Wait Time", "Status"]
         ws.append(headers)
 
         # Add dropdown validation to Status column
@@ -186,7 +188,7 @@ def main():
         date_received = email_date.strftime('%Y-%m-%d')
         time_received = email_date.strftime('%H:%M:%S')
 
-        message_id = email['MessageID'] 
+        message_id = email[MESSAGE_ID] 
 
         row = [
             message_id,

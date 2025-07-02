@@ -19,11 +19,21 @@ def index():
 @app.route("/run-script", methods=["POST"])
 def run_script():
     try:
-        # Run your main.py script
-        subprocess.run(["python3", "main.py"], check=True)
-        return jsonify({"status": "success"})
+        result = subprocess.run(
+            ["python3", "main.py"],
+            check=True,
+            capture_output=True,
+            text=True
+        )
+        return jsonify({"status": "success", "stdout": result.stdout})
     except subprocess.CalledProcessError as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+        # Return stdout and stderr so you can debug
+        return jsonify({
+            "status": "error",
+            "message": str(e),
+            "stdout": e.stdout,
+            "stderr": e.stderr
+        }), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
