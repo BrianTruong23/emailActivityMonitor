@@ -1,8 +1,9 @@
-google-api-python-client
-google-auth-httplib2
-google-auth-oauthlib
-openpyxl
-pandas
 flask
 flask-cors
 gunicorn
+pandas
+openpyxl
+google-api-python-client
+google-auth
+google-auth-httplib2
+google-auth-oauthlib

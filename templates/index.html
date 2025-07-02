@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Excel Log Viewer</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <!-- SheetJS library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <h2>📊 Excel Log Viewer</h2>
+    <div id="output">Loading Excel file...</div>
+
+    <button id="runButton">🔄 Run main.py</button>
+    <div id="status"></div>
+
+   <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
