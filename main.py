@@ -10,11 +10,15 @@ import os
 from email.utils import parsedate_to_datetime
 import pandas as pd
 from datetime import datetime, timezone
+import base64
 
 SCOPES = [
     "https://www.googleapis.com/auth/gmail.readonly",
     "https://www.googleapis.com/auth/spreadsheets"
 ]
+
+CREDENTIALS_PATH = "/etc/secrets/credentials.json"
+TOKEN_PATH_B64 = "/etc/secrets/token.pickleb64"
 
 EXCEL_PATH = "result/log2.xlsx"
 
@@ -36,6 +40,24 @@ def load_credentials():
         creds = pickle.load(token)
     return creds
 
+def load_render_credentials():
+    try:
+        # Load base64-encoded pickle
+        with open(TOKEN_PATH_B64, "rb") as f:
+            b64_data = f.read()
+        raw_data = base64.b64decode(b64_data)
+        creds = pickle.loads(raw_data)
+        return creds
+
+    except Exception as e:
+        print("❌ Failed to load token.pickle. Re-authentication required.")
+        print(str(e))
+        # Optionally re-authenticate here if you want (requires user intervention)
+        flow = InstalledAppFlow.from_client_secrets_file(
+            CREDENTIALS_PATH, SCOPES
+        )
+        creds = flow.run_console()  # Only works if you can paste the auth code
+        return creds
 
 def get_all_unread_emails(service):
     # Retrieve unread messages
@@ -189,7 +211,12 @@ def format_wait_time(delta):
 
 
 def main():
-    creds = load_credentials()
+
+
+    if os.path.exists("/etc/secrets/credentials.json"):
+        creds = load_render_credentials()
+    else:
+        creds = load_credentials()
     
     gmail_service = build('gmail', 'v1', credentials=creds)
 

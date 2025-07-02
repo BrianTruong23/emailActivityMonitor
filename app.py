@@ -2,7 +2,7 @@ from flask import Flask, render_template, jsonify
 import subprocess
 from flask_cors import CORS
 from flask import send_file
-from main import load_credentials, get_all_unread_emails, EXCEL_PATH, build
+from main import load_render_credentials, get_all_unread_emails, EXCEL_PATH, build
 
 
 app = Flask(__name__)
@@ -58,7 +58,7 @@ def run_script():
 def get_emails():
     print("✅ /get-emails route was called!")
 
-    creds = load_credentials()
+    creds = load_render_credentials()
     print("✅ Credentials loaded.")
 
     gmail_service = build('gmail', 'v1', credentials=creds)
