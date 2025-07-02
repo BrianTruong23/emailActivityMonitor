@@ -1,6 +1,9 @@
 name: Email Activity Monitor
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:  # allows manual trigger
   schedule:
     - cron: '*/15 * * * *'  # runs every hour
@@ -30,7 +33,7 @@ jobs:
       - name: Restore token.pickle
         run: |
           echo "${{ secrets.GMAIL_TOKEN_BASE64 }}" | base64 --decode > token.pickle
-          
+
       - name: Run email monitor script
         run: |
           python main.py
