@@ -3,39 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <title>Excel Log Viewer</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      padding: 20px;
-    }
-    h2 {
-      color: #333;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      background: #fff;
-      margin-top: 20px;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-    }
-    th {
-      background: #f0f0f0;
-    }
-  </style>
+   <link rel="stylesheet" href="style.css">
   <!-- SheetJS library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
-  <h2>📊 Excel Log (Rendered in Page)</h2>
-  <div id="output">Loading Excel file...</div>
+    <h2>📊 Excel Log Viewer</h2>
+    <div id="output">Loading Excel file...</div>
+
+    <button id="runButton">🔄 Run main.py</button>
+    <div id="status"></div>
 
   <script>
-    // URL to your Excel file (adjust this if needed)
     const excelUrl = 'result/log2.xlsx';
 
     fetch(excelUrl)
@@ -49,13 +28,36 @@
         const workbook = XLSX.read(arrayBuffer, { type: 'array' });
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
-        const html = XLSX.utils.sheet_to_html(worksheet);
+        let html = XLSX.utils.sheet_to_html(worksheet);
+
+        // Remove default inline styles from SheetJS HTML
+        html = html.replace(/<table/g, '<table class="excel-table"');
         document.getElementById('output').innerHTML = html;
       })
       .catch(error => {
         console.error('Error loading Excel file:', error);
-        document.getElementById('output').textContent = 'Failed to load Excel file.';
+        document.getElementById('output').textContent = '⚠️ Failed to load Excel file.';
       });
+
+    document.getElementById("runButton").addEventListener("click", () => {
+    document.getElementById("status").textContent = "Running script...";
+
+    fetch("https://your-backend.onrender.com/run-script", {
+        method: "POST"
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+        document.getElementById("status").textContent = "✅ Script ran successfully.";
+        } else {
+        document.getElementById("status").textContent = "❌ Error: " + data.message;
+        }
+    })
+    .catch(error => {
+        document.getElementById("status").textContent = "❌ Request failed.";
+        console.error(error);
+    });
+    });
   </script>
 </body>
 </html>
